@@ -59,21 +59,31 @@ section {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    z-index: -1;
 }
 
-.main-img img {
-    display: contents;
-    z-index: -2;
+#main-img {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2; /* This places the container behind the section's other content */
+}
+
+#main-img svg {
+    display: inline-block;
+    overflow: hidden;
 }
 
 section h1 {
-    width: 85%;
+    width: 100%;
 }
 
 section img {
     opacity: 0.5;
 }
+
+/* Menu Settings */
 
 nav {
     position: fixed;
