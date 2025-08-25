@@ -11,53 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     requestAnimationFrame(raf);
 
-
-    //loadSVG
-    function loadSVG () {
-        fetch("/public/HeroImgInteractive.svg")
-        .then(response => response.text())
-        .then((svg) => {
-            document.getElementById("main-img").innerHTML = svg;
-            document.querySelector("#main-img svg").setAttribute("PreserveAspectRatio","xMidYMid meet")
-            setAnimation();
-        }); 
-    }
-
-    loadSVG();
-
-    function setAnimation () {
-        let runAnimation = gsap.timeline();
-        
-        runAnimation.add([
-            gsap.to("#main-img svg", 2, {
-                scale: 0.8,
-                ease: "hop"
-            }),
-
-            gsap.to("#Hat_Image", 2, {
-                x : "40px",
-                y : "-10px",
-                ease: "hop"
-            }),
-
-            gsap.to("#Hire_ME_Disc_Image", 2, {
-                x: "20svh",
-                y: "-10svw",
-                ease: "hop"
-            }),
-
-            gsap.to("#Layer_5_Image", 2, {
-                x: "20svh",
-                y: "-10svw",
-                ease: "hop"
-            })
-
-            
-
-        ])
-    }
-
-
     // --- DOM Element Selectors ---
     const container = document.querySelector(".container");
     const menuToggleBtn = document.querySelector(".menu-toggle-btn");
