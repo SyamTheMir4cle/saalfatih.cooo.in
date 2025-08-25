@@ -2,7 +2,7 @@
 
 This repository contains the source code for my personal portfolio website. I built it to showcase my skills in front-end web development and to serve as a central hub for my projects.
 
-**Live Demo:** [https://saalfatih.cooo.in](https://saalfatih.cooo.in) ***
+**Live Demo:** [https://saalfatih.cooo.in](https://saalfatihdev.cooo.in) ***
 
 ### ✨ Features
 
