@@ -199,42 +199,141 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-    // --- Preloader Terminal Animation ---
-    const terminalText = document.getElementById("terminal-text");
-    const preloader = document.getElementById("preloader");
-    const words = ["Booting system...", "Loading assets...", "Compiling styles...", "Welcome to.."];
-    let wordIndex = 0;
-    let charIndex = 0;
+        const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
 
-    function type() {
-        // Check if there are still words to type
-        if (wordIndex < words.length) {
-            // Check if the current word is still being typed
-            if (charIndex < words[wordIndex].length) {
-                terminalText.textContent += words[wordIndex].charAt(charIndex);
-                charIndex++;
-                setTimeout(type, 100); // Speed of typing
-            } else {
-                // Word is finished, prepare for the next word
-                wordIndex++;
-                charIndex = 0;
-                setTimeout(() => {
-                    terminalText.textContent = ""; // Clear the text
-                    type();
-                }, 1500); // Pause between words
+    // Set canvas to full screen size
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Characters to use for the rain (Katakana is classic for Matrix)
+    const characters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const charArray = characters.split('');
+    const fontSize = 16;
+    const columns = canvas.width / fontSize; // Number of columns for the rain
+
+    // Array to track the y-position of each drop
+    const drops = [];
+    for (let x = 0; x < columns; x++) {
+        drops[x] = 1;
+    }
+
+    // Function to draw the animation frame by frame
+    function draw() {
+        // Fill canvas with a semi-transparent black to create the fading trail effect
+        ctx.fillStyle = 'rgba(23, 23, 23, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Set the color and font for the falling characters
+        ctx.fillStyle = '#00FF41'; // Green color, matching your terminal
+        ctx.font = fontSize + 'px monospace';
+
+        // Loop through each column (each drop)
+        for (let i = 0; i < drops.length; i++) {
+            // Get a random character to draw
+            const text = charArray[Math.floor(Math.random() * charArray.length)];
+            
+            // Draw the character
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            // Reset the drop to the top if it goes off screen
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
             }
-        } else {
-            // All words have been typed, hide the preloader
-            gsap.to(preloader, {
-                opacity: 0,
-                duration: 0.75,
-                onComplete: () => {
-                    preloader.style.display = "none";
-                }
-            });
+
+            // Move the drop down by one position
+            drops[i]++;
         }
     }
 
-    type(); // Start the animation
+    // Start the animation loop
+    setInterval(draw, 33);
+    
+    
+    
+    // --- Modern Terminal Preloader ---
+    const terminal = document.getElementById("terminal");
+    const preloader = document.getElementById("preloader");
+    const prompts = [
+        "Booting renderer...",
+        "Loading custom fonts...",
+        "Calibrating color palettes...",
+        "Compiling GSAP animations...",
+        "Syamil Alfatih - Online."
+    ];
+
+    const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+    async function typeLine(lineText) {
+        const line = document.createElement("div");
+        line.className = "terminal-line";
+
+        // This is the updated part that creates the colorful prompt
+        const prompt = document.createElement("span");
+        prompt.className = "prompt";
+        prompt.innerHTML = `<span class="prompt-user">syamil@portfolio</span><span class="prompt-symbol">:~$</span>`;
+
+        const text = document.createElement("span");
+        const cursor = document.createElement("span");
+        cursor.className = "cursor";
+
+        line.appendChild(prompt);
+        line.appendChild(text);
+        line.appendChild(cursor);
+        terminal.appendChild(line);
+
+        for (let i = 0; i < lineText.length; i++) {
+            text.textContent += lineText.charAt(i);
+            await delay(75);
+        }
+
+        line.removeChild(cursor);
+    }
+
+    async function runSequence() {
+        await delay(500);
+
+        for (const promptText of prompts) {
+            await typeLine(promptText);
+            await delay(400);
+        }
+
+        await delay(1000);
+
+        // --- NEW: Scatter and Reveal Animation ---
+        
+        // 1. Select all the text lines that have been created
+        const lines = terminal.querySelectorAll(".terminal-line");
+
+        // 2. Use SplitText to break the lines into individual characters
+        const split = new SplitText(lines, { type: "chars" });
+        const chars = split.chars; // An array of all character elements
+
+        // 3. Create the GSAP timeline
+        const tl = gsap.timeline({
+            onComplete: () => {
+                preloader.style.display = "none"; // Hide preloader when done
+            }
+        });
+
+        // 4. Add the animations to the timeline
+        tl.to(chars, {
+            duration: 0.5,
+            opacity: 0,
+            x: () => gsap.utils.random(-400, 400),
+            y: () => gsap.utils.random(-300, 300),
+            rotation: () => gsap.utils.random(-360, 360),
+            ease: "power2.inOut",
+            stagger: {
+                each: 0.02,
+                from: "random"
+            }
+        }).to("#background-canvas", {
+            duration: 0.5,
+            opacity: 0
+        }, "<0.5"); // Start fading the canvas 0.5s after the scatter starts
+    }
+
+    runSequence();
 
 });
