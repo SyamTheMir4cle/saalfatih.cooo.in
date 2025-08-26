@@ -196,3 +196,45 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    // --- Preloader Terminal Animation ---
+    const terminalText = document.getElementById("terminal-text");
+    const preloader = document.getElementById("preloader");
+    const words = ["Booting system...", "Loading assets...", "Compiling styles...", "Welcome to.."];
+    let wordIndex = 0;
+    let charIndex = 0;
+
+    function type() {
+        // Check if there are still words to type
+        if (wordIndex < words.length) {
+            // Check if the current word is still being typed
+            if (charIndex < words[wordIndex].length) {
+                terminalText.textContent += words[wordIndex].charAt(charIndex);
+                charIndex++;
+                setTimeout(type, 100); // Speed of typing
+            } else {
+                // Word is finished, prepare for the next word
+                wordIndex++;
+                charIndex = 0;
+                setTimeout(() => {
+                    terminalText.textContent = ""; // Clear the text
+                    type();
+                }, 1500); // Pause between words
+            }
+        } else {
+            // All words have been typed, hide the preloader
+            gsap.to(preloader, {
+                opacity: 0,
+                duration: 0.75,
+                onComplete: () => {
+                    preloader.style.display = "none";
+                }
+            });
+        }
+    }
+
+    type(); // Start the animation
+
+});
