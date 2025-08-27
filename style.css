@@ -59,20 +59,63 @@ section {
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    z-index: -1;
 }
 
-.main-img img {
-    display: contents;
-    z-index: -2;
+#Hero {
+    display: grid;          /* 1. Use Grid layout instead of Flexbox */
+    place-items: center;    /* 2. A simple way to center everything */
+    height: 100vh;
+    padding: 2rem;
+    background-color: var(--bg);
+    color: var(--fg);
+    text-align: center;
 }
 
-section h1 {
-    width: 85%;
+#Hero > * {
+    grid-area: 1 / 1; 
 }
 
-section img {
-    opacity: 0.5;
+.Headline {
+    z-index: 2; /* 5. Ensure the text is always on top of the image */
+}
+
+.Headline h1 {
+    font-size: 5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--fg);
+}
+
+.Headline p {
+    color: var(--fg);
+    margin-bottom: 1rem;
+}
+
+.sub-headline {
+    display: block;
+    font-style: italic;
+    font-weight: 400;
+}
+
+#main-img {
+    width: 450px;       /* Gives the container a width */
+    height: 450px;      /* Gives the container a height */
+    opacity: 0.2;       /* Makes it transparent */
+    position: relative; /* Needed for z-index context if required */
+    z-index: 1;         /* Places it behind the text */
+}
+
+#main-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Prevents the image from being cropped */
+}
+
+.hero-reveal-element {
+    opacity: 0;                 /* Start fully transparent */
+    filter: blur(10px);         /* Start with a 10px blur */
+    transform: translateY(30px);  /* Start 30px lower than the final position */
+    visibility: hidden;           /* Keep it hidden from the browser initially */
 }
 
 nav {
@@ -84,6 +127,16 @@ nav {
     pointer-events: none;
     overflow: hidden;
     z-index: 2;
+}
+
+.scroll-to-explore {
+    font-size: 1rem;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    overflow: hidden;
+    rotate: -90deg;
+    color: var(--fg);
 }
 
 .menu-bar {
@@ -181,7 +234,7 @@ nav {
 
 .menu-overlay-content {
     display: flex;
-    transform: translateY(-50%);
+    transform: translateY(-0%);
     will-change: transform;
     pointer-events: all;
 }
@@ -277,6 +330,33 @@ nav {
         top: 50%;
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .scroll-to-explore {
+        font-size: 0.4rem;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        overflow: hidden;
+        rotate: -90deg;
+        color: var(--fg);
+    }
+
+    /* --- Hero Section Responsive Styles --- */
+
+    #main-img {
+        /* Make the image size fluid instead of fixed */
+        width: 70vw; /* 70% of the viewport width */
+        height: 70vw;
+        
+        /* Set a max size so it doesn't get too big on tablets */
+        max-width: 350px;
+        max-height: 350px;
+    }
+
+    .Headline h1 {
+        /* Reduce the font size for smaller screens */
+        font-size: 2.8rem;
     }
 }
 

@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // Register GSAP plugins
-    gsap.registerPlugin(SplitText, CustomEase);
+    gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
     CustomEase.create("hop", ".87, .0, .13, 1");
 
     // Initialize Lenis for smooth scrolling
@@ -199,7 +199,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", () => {
-        const canvas = document.getElementById('background-canvas');
+    // Parallax effect for the hero section using GSAP and ScrollTrigger
+        gsap.to("#main-img", {
+        y: "-50%", // Move the image up by 50% of its height
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#Hero",     // The animation starts when #Hero is in view
+            start: "top top",     // When the top of #Hero hits the top of the screen
+            end: "bottom top",    // When the bottom of #Hero hits the top of the screen
+            scrub: true           // Links the animation progress to the scrollbar
+        }
+    });
+
+    // Animate the headline text
+    gsap.to(".Headline", {
+        y: "-150%", // Move the text up faster than the image for a depth effect
+        ease: "none",
+        scrollTrigger: {
+            trigger: "#Hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true
+        }
+    });
+
+    
+    const canvas = document.getElementById('background-canvas');
     const ctx = canvas.getContext('2d');
 
     // Set canvas to full screen size
@@ -313,6 +338,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const tl = gsap.timeline({
             onComplete: () => {
                 preloader.style.display = "none"; // Hide preloader when done
+                // --- ADD THE NEW REVEAL ANIMATION HERE ---
+                // First, make the hero elements visible to the browser
+                gsap.set(".hero-reveal-element", { visibility: "visible" });
+
+                // Then, animate them into their final state
+                gsap.to(".hero-reveal-element", {
+                    duration: 1.5,
+                    opacity: 1,
+                    y: 0,
+                    filter: "blur(0px)",
+                    ease: "power3.out",
+                    stagger: 0.3 // Adds a 0.3s delay between each element's animation
+                });
             }
         });
 
